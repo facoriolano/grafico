@@ -11,17 +11,25 @@
       background-color: #121212;
       color: #ffffff;
     }
-    canvas {
-      max-width: 800px;
-    }
     h2 {
       color: #ffffff;
+    }
+    .chart-container {
+      max-width: 800px;
+      height: 400px;
+      margin: auto;
+    }
+    canvas {
+      width: 100% !important;
+      height: 100% !important;
     }
   </style>
 </head>
 <body>
   <h2>Crescimento do M2 Global (2020-2025)</h2>
-  <canvas id="m2Chart"></canvas>
+  <div class="chart-container">
+    <canvas id="m2Chart"></canvas>
+  </div>
 
   <script>
     const ctx = document.getElementById('m2Chart').getContext('2d');
