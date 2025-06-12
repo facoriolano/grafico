@@ -1,28 +1,63 @@
-{
-  "type": "line",
-  "data": {
-    "labels": ["2020", "2021", "2022", "2023", "2024", "2025"],
-    "datasets": [{
-      "label": "M2 Liquidez Global (Trilhões USD)",
-      "data": [80, 85, 87, 90, 92, 95],
-      "borderColor": "#1e88e5",
-      "backgroundColor": "rgba(30, 136, 229, 0.2)",
-      "fill": true,
-      "tension": 0.4
-    }]
-  },
-  "options": {
-    "scales": {
-      "y": {
-        "beginAtZero": false,
-        "title": { "display": true, "text": "Trilhões de USD" }
-      },
-      "x": {
-        "title": { "display": true, "text": "Ano" }
-      }
-    },
-    "plugins": {
-      "title": { "display": true, "text": "Crescimento do M2 Global (2020-2025)" }
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Crescimento do M2 Global (2020-2025)</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      background-color: #f9f9f9;
     }
-  }
-}
+    canvas {
+      max-width: 800px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Crescimento do M2 Global (2020-2025)</h2>
+  <canvas id="m2Chart"></canvas>
+
+  <script>
+    const ctx = document.getElementById('m2Chart').getContext('2d');
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ["2020", "2021", "2022", "2023", "2024", "2025"],
+        datasets: [{
+          label: "M2 Liquidez Global (Trilhões USD)",
+          data: [80, 85, 87, 90, 92, 95],
+          borderColor: "#1e88e5",
+          backgroundColor: "rgba(30, 136, 229, 0.2)",
+          fill: true,
+          tension: 0.4
+        }]
+      },
+      options: {
+        scales: {
+          y: {
+            beginAtZero: false,
+            title: {
+              display: true,
+              text: "Trilhões de USD"
+            }
+          },
+          x: {
+            title: {
+              display: true,
+              text: "Ano"
+            }
+          }
+        },
+        plugins: {
+          title: {
+            display: true,
+            text: "Crescimento do M2 Global (2020-2025)"
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
