@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <title>Crescimento do M2 Brasil (2020-2025)</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 40px;
+      background-color: #121212;
+      color: #ffffff;
+    }
+    h2 {
+      color: #ffffff;
+    }
+    .chart-container {
+      max-width: 800px;
+      height: 400px;
+      margin: auto;
+    }
+    canvas {
+      width: 100% !important;
+      height: 100% !important;
+    }
+  </style>
+</head>
+<body>
+  <h2>Crescimento do M2 Brasil (2020-2025)</h2>
+  <div class="chart-container">
+    <canvas id="m2BrasilChart"></canvas>
+  </div>
+
+  <script>
+    const ctx = document.getElementById('m2BrasilChart').getContext('2d');
+    new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ["2020", "2021", "2022", "2023", "2024", "2025"],
+        datasets: [{
+          label: "M2 Brasil (Bilhões BRL)",
+          data: [4000, 4500, 5000, 5500, 6000, 6643],
+          borderColor: "#43a047",
+          backgroundColor: "rgba(67, 160, 71, 0.2)",
+          fill: true,
+          tension: 0.4
+        }]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          title: {
+            display: true,
+            text: "Crescimento do M2 Brasil (2020-2025)",
+            color: "#ffffff",
+            font: {
+              size: 18,
+              weight: 'bold'
+            }
+          },
+          legend: {
+            labels: {
+              color: "#ffffff"
+            }
+          }
+        },
+        scales: {
+          x: {
+            ticks: { color: "#ffffff" },
+            title: {
+              display: true,
+              text: "Ano",
+              color: "#ffffff"
+            },
+            grid: {
+              color: "#333333"
+            }
+          },
+          y: {
+            beginAtZero: false,
+            ticks: { color: "#ffffff" },
+            title: {
+              display: true,
+              text: "Bilhões de BRL",
+              color: "#ffffff"
+            },
+            grid: {
+              color: "#333333"
+            }
+          }
+        }
+      }
+    });
+  </script>
+</body>
+</html>
