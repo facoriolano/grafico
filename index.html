@@ -1,93 +1,178 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <title>Crescimento do M2 Global (2020-2025)</title>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Gráficos M2 EUA e Brasil - 2025</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
   <style>
     body {
+      margin: 0;
+      padding: 40px 20px;
+      background-color: #1a1a1a;
       font-family: Arial, sans-serif;
-      margin: 40px;
-      background-color: #121212;
+      color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h1 {
+      margin-bottom: 40px;
+      font-size: 24px;
+      text-align: center;
       color: #ffffff;
     }
-    h2 {
-      color: #ffffff;
+
+    .charts-container {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 40px;
+      justify-content: center;
+      width: 100%;
+      max-width: 1600px;
     }
-    .chart-container {
+
+    .chart-box {
+      flex: 1 1 400px;
       max-width: 800px;
       height: 400px;
-      margin: auto;
+      background-color: transparent;
     }
+
     canvas {
       width: 100% !important;
       height: 100% !important;
+      background-color: transparent;
     }
   </style>
 </head>
 <body>
-  <h2>Crescimento do M2 Global (2020-2025)</h2>
-  <div class="chart-container">
-    <canvas id="m2Chart"></canvas>
+  <h1>Comparativo: M2 EUA x M2 Brasil (2025)</h1>
+
+  <div class="charts-container">
+    <div class="chart-box">
+      <canvas id="chartEUA"></canvas>
+    </div>
+    <div class="chart-box">
+      <canvas id="chartBrasil"></canvas>
+    </div>
   </div>
 
   <script>
-    const ctx = document.getElementById('m2Chart').getContext('2d');
-    new Chart(ctx, {
+    const labels = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+
+    const chartEUA = new Chart(document.getElementById('chartEUA').getContext('2d'), {
       type: 'line',
       data: {
-        labels: ["2020", "2021", "2022", "2023", "2024", "2025"],
+        labels: labels,
         datasets: [{
-          label: "M2 Liquidez Global (Trilhões USD)",
-          data: [80, 85, 87, 90, 92, 95],
-          borderColor: "#1e88e5",
-          backgroundColor: "rgba(30, 136, 229, 0.2)",
+          label: 'M2 EUA (Bilhões de USD)',
+          data: [21561.4, 21626.2, 21762.5, 21862.5, 21928.1, 21993.9, 22059.9, 22126.1, 22192.5, 22259.1, 22325.9, 22392.9],
+          borderColor: '#1E90FF',
+          backgroundColor: 'rgba(30, 144, 255, 0.2)',
           fill: true,
-          tension: 0.4
+          tension: 0.3
         }]
       },
       options: {
         responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          title: {
-            display: true,
-            text: "Crescimento do M2 Global (2020-2025)",
-            color: "#ffffff",
-            font: {
-              size: 18,
-              weight: 'bold'
+        scales: {
+          y: {
+            title: {
+              display: true,
+              text: 'M2 (Bilhões de USD)',
+              color: '#ffffff'
+            },
+            ticks: {
+              color: '#d0d0d0'
+            },
+            grid: {
+              color: 'rgba(255, 255, 255, 0.1)'
             }
           },
-          legend: {
-            labels: {
-              color: "#ffffff"
+          x: {
+            title: {
+              display: true,
+              text: 'Meses de 2025',
+              color: '#ffffff'
+            },
+            ticks: {
+              color: '#d0d0d0'
+            },
+            grid: {
+              color: 'rgba(255, 255, 255, 0.05)'
             }
           }
         },
-        scales: {
-          x: {
-            ticks: { color: "#ffffff" },
-            title: {
-              display: true,
-              text: "Ano",
-              color: "#ffffff"
-            },
-            grid: {
-              color: "#333333"
+        plugins: {
+          legend: {
+            labels: {
+              color: '#ffffff'
             }
           },
+          title: {
+            display: true,
+            text: 'M2 - Estados Unidos (2025)',
+            color: '#ffffff'
+          }
+        }
+      }
+    });
+
+    const chartBrasil = new Chart(document.getElementById('chartBrasil').getContext('2d'), {
+      type: 'line',
+      data: {
+        labels: labels,
+        datasets: [{
+          label: 'M2 Brasil (Bilhões de BRL)',
+          data: [4200, 4250, 4300, 4350, 4400, 4450, 4500, 4550, 4600, 4650, 4700, 4750],
+          borderColor: '#32CD32',
+          backgroundColor: 'rgba(50, 205, 50, 0.2)',
+          fill: true,
+          tension: 0.3
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
           y: {
-            beginAtZero: false,
-            ticks: { color: "#ffffff" },
             title: {
               display: true,
-              text: "Trilhões de USD",
-              color: "#ffffff"
+              text: 'M2 (Bilhões de BRL)',
+              color: '#ffffff'
+            },
+            ticks: {
+              color: '#d0d0d0'
             },
             grid: {
-              color: "#333333"
+              color: 'rgba(255, 255, 255, 0.1)'
             }
+          },
+          x: {
+            title: {
+              display: true,
+              text: 'Meses de 2025',
+              color: '#ffffff'
+            },
+            ticks: {
+              color: '#d0d0d0'
+            },
+            grid: {
+              color: 'rgba(255, 255, 255, 0.05)'
+            }
+          }
+        },
+        plugins: {
+          legend: {
+            labels: {
+              color: '#ffffff'
+            }
+          },
+          title: {
+            display: true,
+            text: 'M2 - Brasil (2025)',
+            color: '#ffffff'
           }
         }
       }
