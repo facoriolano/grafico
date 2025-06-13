@@ -15,18 +15,19 @@
       background-color: #1a1a1a;
       font-family: Arial, sans-serif;
     }
-    #m2Chart {
+    canvas {
       max-width: 800px;
       width: 90%;
-      margin: 20px;
       background-color: transparent;
     }
   </style>
 </head>
 <body>
   <canvas id="m2Chart"></canvas>
+
   <script>
     const ctx = document.getElementById('m2Chart').getContext('2d');
+
     new Chart(ctx, {
       type: 'line',
       data: {
@@ -41,6 +42,8 @@
         }]
       },
       options: {
+        responsive: true,
+        maintainAspectRatio: false,
         scales: {
           y: {
             title: {
@@ -75,8 +78,6 @@
         },
         plugins: {
           legend: {
-            display: true,
-            position: 'top',
             labels: {
               color: '#ffffff'
             }
