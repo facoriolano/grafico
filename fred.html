@@ -3,70 +3,181 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Comparativo: M2 EUA x Brasil</title>
+  <title>Comparativo: M2 EUA x Brasil - 2025</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
   <style>
-    /* mesm oestética que você já tinha */
+    body {
+      margin: 0;
+      padding: 40px 20px;
+      background-color: #1a1a1a;
+      font-family: Arial, sans-serif;
+      color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h1 {
+      margin-bottom: 40px;
+      font-size: 24px;
+      text-align: center;
+      color: #ffffff;
+    }
+
+    .chart-box {
+      width: 100%;
+      max-width: 1000px;
+      height: 500px;
+    }
+
+    canvas {
+      width: 100% !important;
+      height: 100% !important;
+      background-color: transparent;
+    }
   </style>
 </head>
 <body>
-  <h1>Comparativo Automático: M2 EUA x Brasil</h1>
-  <div class="chart-box"><canvas id="chartComparativo"></canvas></div>
+  <h1>Comparativo: M2 EUA x M2 Brasil (2025)</h1>
+
+  <div class="chart-box">
+    <canvas id="chartComparativo"></canvas>
+  </div>
 
   <script>
-    async function fetchEuaM2() {
-      const apiKey = 'SEU_FRED_API_KEY';
-      const url = `https://api.stlouisfed.org/fred/series/observations?series_id=M2SL&api_key=${apiKey}&file_type=json&frequency=m&observation_start=2025-01-01`;
-      const resp = await fetch(url);
-      const json = await resp.json();
-      return json.observations.map(o => parseFloat(o.value));
+    const apiKey = '5560f778282332aa309c0e6d6e4c61ea';
+
+    async function fetchFRED(seriesId) {
+      const url = `https://api.stlouisfed.org/fred/series/observations?series_id=${seriesId}&api_key=${apiKey}&file_type=json&frequency=m&observation_start=2025-01-01&observation_end=2025-12-31`;
+      try {
+        const res = await fetch(url);
+        if (!res.ok) throw new Error(`Erro HTTP ${res.status}`);
+        const json = await res.json();
+        return json.observations.map(obs => parseFloat(obs.value));
+      } catch (error) {
+        console.error(`Erro ao buscar ${seriesId}:`, error);
+        return [];
+      }
     }
 
-    async function fetchBrasilM2() {
-      const url = `https://api.bcb.gov.br/dados/serie/bcdata.sgs.20539/dados?formato=json&dataInicial=01/01/2025&dataFinal=31/12/2025`;
-      const resp = await fetch(url);
-      const json = await resp.json();
-      return json.map(o => parseFloat(o.valor));
-    }
+    async function fetchDados() {
+      const [eua, brasil] = await Promise.all([
+        fetchFRED('M2SL'),    // M2 EUA
+        fetchFRED('MYAGM2BRM189N') // M2 Brasil (mensal)
+      ]);
 
-    async function criarGrafico() {
-      const [eua, br] = await Promise.all([fetchEuaM2(), fetchBrasilM2()]);
-      const labels = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+      const meses = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
 
-      new Chart(document.getElementById('chartComparativo').getContext('2d'), {
+      const ctx = document.getElementById('chartComparativo').getContext('2d');
+      new Chart(ctx, {
         type: 'line',
         data: {
-          labels,
+          labels: meses,
           datasets: [
             {
               label: 'M2 EUA (Bilhões USD)',
               data: eua,
               borderColor: '#1E90FF',
-              backgroundColor: 'rgba(30,144,255,0.2)',
-              yAxisID: 'yEUA',
+              backgroundColor: 'rgba(30, 144, 255, 0.2)',
+              fill: true,
+              tension: 0.3,
+              yAxisID: 'yEUA'
             },
             {
               label: 'M2 Brasil (Bilhões BRL)',
-              data: br,
+              data: brasil,
               borderColor: '#32CD32',
-              backgroundColor: 'rgba(50,205,50,0.2)',
-              yAxisID: 'yBrasil',
+              backgroundColor: 'rgba(50, 205, 50, 0.2)',
+              fill: true,
+              tension: 0.3,
+              yAxisID: 'yBrasil'
             }
           ]
         },
         options: {
+          responsive: true,
           scales: {
-            yEUA: { position: 'left', title: { display: true, text: 'Bilhões USD' } },
-            yBrasil: { position: 'right', title: { display: true, text: 'Bilhões BRL' } },
-            x: { title: { display: true, text: 'Meses de 2025' } }
+            x: {
+              title: {
+                display: true,
+                text: 'Meses de 2025',
+                color: '#ffffff'
+              },
+              ticks: {
+                color: '#d0d0d0'
+              },
+              grid: {
+                color: 'rgba(255, 255, 255, 0.05)'
+              }
+            },
+            yEUA: {
+              type: 'linear',
+              position: 'left',
+              title: {
+                display: true,
+                text: 'M2 EUA (Bilhões USD)',
+                color: '#1E90FF'
+              },
+              ticks: {
+                color: '#1E90FF'
+              },
+              grid: {
+                color: 'rgba(30, 144, 255, 0.05)'
+              }
+            },
+            yBrasil: {
+              type: 'linear',
+              position: 'right',
+              title: {
+                display: true,
+                text: 'M2 Brasil (Bilhões BRL)',
+                color: '#32CD32'
+              },
+              ticks: {
+                color: '#32CD32'
+              },
+              grid: {
+                drawOnChartArea: false
+              }
+            }
           },
-          plugins: { tooltip: { mode: 'index', intersect: false } },
-          interaction: { mode: 'nearest', axis: 'x', intersect: false }
+          plugins: {
+            legend: {
+              labels: {
+                color: '#ffffff'
+              }
+            },
+            title: {
+              display: true,
+              text: 'Comparativo M2 - EUA x Brasil (2025)',
+              color: '#ffffff'
+            },
+            tooltip: {
+              mode: 'index',
+              intersect: false,
+              callbacks: {
+                label: function(context) {
+                  let label = context.dataset.label || '';
+                  if (label) label += ': ';
+                  if (context.parsed.y !== null) {
+                    label += context.parsed.y.toLocaleString() + 
+                      (context.dataset.label.includes('EUA') ? ' Bilhões USD' : ' Bilhões BRL');
+                  }
+                  return label;
+                }
+              }
+            }
+          },
+          interaction: {
+            mode: 'nearest',
+            axis: 'x',
+            intersect: false
+          }
         }
       });
     }
 
-    criarGrafico();
+    fetchDados();
   </script>
 </body>
 </html>
