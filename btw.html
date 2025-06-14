@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Preço Mensal</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      padding: 40px 20px;
+      background-color: #1a1a1a;
+      font-family: Arial, sans-serif;
+      color: #ffffff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    h1 {
+      margin-bottom: 40px;
+      font-size: 24px;
+      text-align: center;
+      color: #ffffff;
+    }
+
+    .chart-box {
+      width: 100%;
+      max-width: 800px;
+      height: 400px;
+      background-color: transparent;
+    }
+
+    canvas {
+      width: 100% !important;
+      height: 100% !important;
+      background-color: transparent;
+    }
+  </style>
+</head>
+<body>
+  <h1>Preço Mensal (Maio a Setembro)</h1>
+
+  <div class="chart-box">
+    <canvas id="precoChart"></canvas>
+  </div>
+
+  <script>
+    const ctx = document.getElementById('precoChart').getContext('2d');
+    const precoChart = new Chart(ctx, {
+      type: 'line',
+      data: {
+        labels: ['Mai', 'Jun', 'Jul', 'Ago', 'Set'],
+        datasets: [{
+          label: 'Preço (R$)',
+          data: [104000, 109000, 117000, 128000, 113000],
+          borderColor: '#FFA500',
+          backgroundColor: 'rgba(255, 165, 0, 0.2)',
+          fill: true,
+          tension: 0.3
+        }]
+      },
+      options: {
+        responsive: true,
+        scales: {
+          y: {
+            title: {
+              display: true,
+              text: 'Preço em Reais (R$)',
+              color: '#ffffff'
+            },
+            ticks: {
+              color: '#d0d0d0'
+            },
+            grid: {
+              color: 'rgba(255, 255, 255, 0.1)'
+            }
+          },
+          x: {
+            title: {
+              display: true,
+              text: 'Meses',
+              color: '#ffffff'
+            },
+            ticks: {
+              color: '#d0d0d0'
+            },
+            grid: {
+              color: 'rgba(255, 255, 255, 0.05)'
+            }
+          }
+        },
+        plugins: {
+          legend: {
+            labels: {
+              color: '#ffffff'
+            }
+          },
+          title: {
+            display: true,
+            text: 'Evolução do Preço Mensal',
+            color: '#ffffff'
+          },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                let value = context.parsed.y;
+                return 'R$ ' + value.toLocaleString('pt-BR');
+              }
+            }
+          }
+        },
+        interaction: {
+          mode: 'nearest',
+          axis: 'x',
+          intersect: false
+        }
+      }
+    });
+  </script>
+</body>
+</html>
