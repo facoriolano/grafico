@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Preço Mensal</title>
+  <title>Preço Mensal 2025 (em mil USD)</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
   <style>
     body {
@@ -39,23 +39,40 @@
   </style>
 </head>
 <body>
-  <h1>Preço Mensal (Maio a Setembro)</h1>
+  <h1>Preço Mensal (2025) em mil USD</h1>
 
   <div class="chart-box">
-    <canvas id="precoChart"></canvas>
+    <canvas id="preco2025"></canvas>
   </div>
 
   <script>
-    const ctx = document.getElementById('precoChart').getContext('2d');
+    const labels = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
+
+    const dataMensal = [ 
+      100000, // Jan
+      102000, // Fev
+      103000, // Mar
+      105000, // Abr
+      104000, // Mai
+      109000, // Jun
+      117000, // Jul
+      128000, // Ago
+      113000, // Set
+      115000, // Out
+      116000, // Nov
+      118000  // Dez
+    ];
+
+    const ctx = document.getElementById('preco2025').getContext('2d');
     const precoChart = new Chart(ctx, {
       type: 'line',
       data: {
-        labels: ['Mai', 'Jun', 'Jul', 'Ago', 'Set'],
+        labels: labels,
         datasets: [{
-          label: 'Preço (R$)',
-          data: [104000, 109000, 117000, 128000, 113000],
-          borderColor: '#FFA500',
-          backgroundColor: 'rgba(255, 165, 0, 0.2)',
+          label: 'Preço (mil USD)',
+          data: dataMensal,
+          borderColor: '#00CED1',
+          backgroundColor: 'rgba(0, 206, 209, 0.2)',
           fill: true,
           tension: 0.3
         }]
@@ -66,7 +83,7 @@
           y: {
             title: {
               display: true,
-              text: 'Preço em Reais (R$)',
+              text: 'Preço em mil dólares (USD)',
               color: '#ffffff'
             },
             ticks: {
@@ -79,7 +96,7 @@
           x: {
             title: {
               display: true,
-              text: 'Meses',
+              text: 'Meses de 2025',
               color: '#ffffff'
             },
             ticks: {
@@ -98,14 +115,14 @@
           },
           title: {
             display: true,
-            text: 'Evolução do Preço Mensal',
+            text: 'Evolução do Preço Mensal - 2025 (mil USD)',
             color: '#ffffff'
           },
           tooltip: {
             callbacks: {
               label: function(context) {
                 let value = context.parsed.y;
-                return 'R$ ' + value.toLocaleString('pt-BR');
+                return 'USD $' + value.toLocaleString('en-US');
               }
             }
           }
