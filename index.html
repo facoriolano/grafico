@@ -115,7 +115,29 @@
             display: true,
             text: 'M2 - Estados Unidos (2025)',
             color: '#ffffff'
+          },
+          tooltip: {
+            enabled: true,
+            mode: 'index',
+            intersect: false,
+            callbacks: {
+              label: function(context) {
+                let label = context.dataset.label || '';
+                if (label) {
+                  label += ': ';
+                }
+                if (context.parsed.y !== null) {
+                  label += context.parsed.y.toFixed(1) + ' Bilhões de USD';
+                }
+                return label;
+              }
+            }
           }
+        },
+        interaction: {
+          mode: 'nearest',
+          axis: 'x',
+          intersect: false
         }
       }
     });
@@ -173,7 +195,29 @@
             display: true,
             text: 'M2 - Brasil (2025)',
             color: '#ffffff'
+          },
+          tooltip: {
+            enabled: true,
+            mode: 'index',
+            intersect: false,
+            callbacks: {
+              label: function(context) {
+                let label = context.dataset.label || '';
+                if (label) {
+                  label += ': ';
+                }
+                if (context.parsed.y !== null) {
+                  label += context.parsed.y.toFixed(1) + ' Bilhões de BRL';
+                }
+                return label;
+              }
+            }
           }
+        },
+        interaction: {
+          mode: 'nearest',
+          axis: 'x',
+          intersect: false
         }
       }
     });
