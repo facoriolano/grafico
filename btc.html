@@ -4,44 +4,62 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Preço Mensal 2025 (em mil USD)</title>
+  <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Inter:wght@400;600&display=swap" rel="stylesheet">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.3/dist/chart.umd.min.js"></script>
   <style>
     body {
       margin: 0;
-      padding: 40px 20px;
-      background-color: #1a1a1a;
-      font-family: Arial, sans-serif;
+      padding: 20px;
+      background-color: #0d0d0f;
+      font-family: 'Inter', sans-serif;
       color: #ffffff;
       display: flex;
       flex-direction: column;
       align-items: center;
+      min-height: 100vh;
     }
 
     h1 {
-      margin-bottom: 40px;
-      font-size: 24px;
+      margin-bottom: 30px;
+      font-size: 28px;
       text-align: center;
-      color: #ffffff;
+      font-family: 'Orbitron', sans-serif;
+      background: linear-gradient(90deg, #00ffd5, #0088ff);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      letter-spacing: 1px;
     }
 
-    .chart-box {
+    .chart-container {
+      background: #16161a;
+      padding: 20px;
+      border-radius: 16px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.4);
       width: 100%;
-      max-width: 800px;
-      height: 400px;
-      background-color: transparent;
+      max-width: 900px;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      animation: fadeIn 1s ease forwards;
+    }
+
+    .chart-container:hover {
+      transform: scale(1.01);
+      box-shadow: 0 12px 30px rgba(0, 255, 213, 0.15);
     }
 
     canvas {
-      width: 100% !important;
-      height: 100% !important;
       background-color: transparent;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
   </style>
 </head>
 <body>
-  <h1>Preço Mensal (2025) em mil USD</h1>
+  <h1>Preço Mensal 2025 (mil USD)</h1>
 
-  <div class="chart-box">
+  <div class="chart-container">
     <canvas id="preco2025"></canvas>
   </div>
 
@@ -50,9 +68,9 @@
 
     const dataMensal = [ 
       106096, // Jan
-      89000, // Fev
-      79000, // Mar
-      76000, // Abr
+      89000,  // Fev
+      79000,  // Mar
+      76000,  // Abr
       111000, // Mai
       101000, // Jun
       119000, // Jul
@@ -60,21 +78,26 @@
       135000, // Set
       155000, // Out
       147000, // Nov
-      null  // Dez
+      null    // Dez
     ];
 
     const ctx = document.getElementById('preco2025').getContext('2d');
-    const precoChart = new Chart(ctx, {
+    new Chart(ctx, {
       type: 'line',
       data: {
         labels: labels,
         datasets: [{
           label: 'Preço (mil USD)',
           data: dataMensal,
-          borderColor: '#00CED1',
-          backgroundColor: 'rgba(0, 206, 209, 0.2)',
+          borderColor: '#00ffd5',
+          backgroundColor: 'rgba(0, 255, 213, 0.15)',
           fill: true,
-          tension: 0.3
+          tension: 0.35,
+          borderWidth: 2,
+          pointBackgroundColor: '#00ffd5',
+          pointRadius: 5,
+          pointHoverRadius: 8,
+          pointHoverBackgroundColor: '#ffffff'
         }]
       },
       options: {
@@ -84,41 +107,39 @@
             title: {
               display: true,
               text: 'Preço em mil dólares (USD)',
-              color: '#ffffff'
+              color: '#ffffff',
+              font: { size: 14 }
             },
-            ticks: {
-              color: '#d0d0d0'
-            },
-            grid: {
-              color: 'rgba(255, 255, 255, 0.1)'
-            }
+            ticks: { color: '#d0d0d0' },
+            grid: { color: 'rgba(255, 255, 255, 0.05)' }
           },
           x: {
             title: {
               display: true,
               text: 'Meses de 2025',
-              color: '#ffffff'
+              color: '#ffffff',
+              font: { size: 14 }
             },
-            ticks: {
-              color: '#d0d0d0'
-            },
-            grid: {
-              color: 'rgba(255, 255, 255, 0.05)'
-            }
+            ticks: { color: '#d0d0d0' },
+            grid: { color: 'rgba(255, 255, 255, 0.02)' }
           }
         },
         plugins: {
           legend: {
-            labels: {
-              color: '#ffffff'
-            }
+            labels: { color: '#ffffff', font: { weight: '600' } }
           },
           title: {
             display: true,
             text: 'Evolução do Preço Mensal - 2025 (mil USD)',
-            color: '#ffffff'
+            color: '#ffffff',
+            font: { size: 18, weight: '600' }
           },
           tooltip: {
+            backgroundColor: '#16161a',
+            borderColor: '#00ffd5',
+            borderWidth: 1,
+            titleColor: '#00ffd5',
+            bodyColor: '#ffffff',
             callbacks: {
               label: function(context) {
                 let value = context.parsed.y;
