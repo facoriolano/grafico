@@ -7,7 +7,7 @@
   <style>
     body {
       margin: 0;
-      background: #1e1e1e;
+      background: #f5f5f5; /* fundo claro */
       display: flex;
       justify-content: center;
       align-items: center;
@@ -18,21 +18,19 @@
       height: 90%;
     }
   </style>
-  <!-- CDN oficial -->
   <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
 </head>
 <body>
   <div id="chart"></div>
   <script>
-    // Cria o gráfico
     const chart = LightweightCharts.createChart(document.getElementById('chart'), {
       layout: {
-        background: { color: '#1e1e1e' },
-        textColor: '#DDD',
+        background: { color: '#ffffff' },
+        textColor: '#333333',
       },
       grid: {
-        vertLines: { color: '#444' },
-        horzLines: { color: '#444' },
+        vertLines: { color: '#cccccc' },
+        horzLines: { color: '#ececec' },
       },
       timeScale: {
         timeVisible: true,
@@ -40,16 +38,15 @@
       }
     });
 
-    // Série de velas (candlestick)
     const candleSeries = chart.addCandlestickSeries({
       upColor: '#26a69a',
       downColor: '#ef5350',
-      borderVisible: false,
+      borderVisible: true,
+      borderColor: '#000000',
       wickUpColor: '#26a69a',
       wickDownColor: '#ef5350',
     });
 
-    // Dados fictícios de exemplo
     const candleData = [
       { time: '2025-09-01', open: 100, high: 105, low: 98, close: 103 },
       { time: '2025-09-02', open: 103, high: 108, low: 102, close: 106 },
@@ -62,15 +59,13 @@
     ];
     candleSeries.setData(candleData);
 
-    // Série de linha (média móvel)
     const smaSeries = chart.addLineSeries({
       color: '#ff9800',
       lineWidth: 2,
     });
 
-    // Calcula SMA simples de 3 períodos
     function calculateSMA(data, period = 3) {
-      let sma = [];
+      const sma = [];
       for (let i = period - 1; i < data.length; i++) {
         let sum = 0;
         for (let j = 0; j < period; j++) {
