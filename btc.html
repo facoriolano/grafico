@@ -50,6 +50,28 @@
       background-color: transparent;
     }
 
+    .buttons {
+      margin-top: 15px;
+      display: flex;
+      gap: 10px;
+      justify-content: center;
+    }
+
+    button {
+      background: linear-gradient(90deg, #00ffd5, #0088ff);
+      border: none;
+      padding: 8px 14px;
+      border-radius: 8px;
+      color: #0d0d0f;
+      font-weight: bold;
+      cursor: pointer;
+      transition: 0.3s;
+    }
+
+    button:hover {
+      opacity: 0.8;
+    }
+
     @keyframes fadeIn {
       from { opacity: 0; transform: translateY(20px); }
       to { opacity: 1; transform: translateY(0); }
@@ -61,28 +83,46 @@
 
   <div class="chart-container">
     <canvas id="preco2025"></canvas>
+    <div class="buttons">
+      <button id="downloadPNG">📸 Baixar PNG</button>
+      <button id="downloadCSV">📊 Baixar CSV</button>
+    </div>
   </div>
 
   <script>
     const labels = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
 
     const dataMensal = [ 
-      106096, // Jan
-      89000,  // Fev
-      79000,  // Mar
-      76000,  // Abr
-      111000, // Mai
-      101000, // Jun
-      119000, // Jul
-      111000, // Ago
-      135000, // Set
-      155000, // Out
-      147000, // Nov
-      null    // Dez
+      106096, 89000, 79000, 76000,
+      111000, 101000, 119000, 111000,
+      135000, 155000, 147000, null
     ];
 
     const ctx = document.getElementById('preco2025').getContext('2d');
-    new Chart(ctx, {
+
+    // Plugin para rótulos nos pontos
+    const pointLabels = {
+      id: 'pointLabels',
+      afterDatasetsDraw(chart) {
+        const {ctx} = chart;
+        chart.data.datasets.forEach((dataset, i) => {
+          const meta = chart.getDatasetMeta(i);
+          meta.data.forEach((point, index) => {
+            const value = dataset.data[index];
+            if (value !== null) {
+              ctx.save();
+              ctx.fillStyle = "#ffffff";
+              ctx.font = "600 11px Inter";
+              ctx.textAlign = "center";
+              ctx.fillText(value.toLocaleString("en-US"), point.x, point.y - 10);
+              ctx.restore();
+            }
+          });
+        });
+      }
+    };
+
+    const chart = new Chart(ctx, {
       type: 'line',
       data: {
         labels: labels,
@@ -90,10 +130,9 @@
           label: 'Preço (mil USD)',
           data: dataMensal,
           borderColor: '#00ffd5',
-          backgroundColor: 'rgba(0, 255, 213, 0.15)',
           fill: true,
           tension: 0.35,
-          borderWidth: 2,
+          borderWidth: 2.5,
           pointBackgroundColor: '#00ffd5',
           pointRadius: 5,
           pointHoverRadius: 8,
@@ -153,7 +192,40 @@
           axis: 'x',
           intersect: false
         }
-      }
+      },
+      plugins: [pointLabels]
+    });
+
+    // Gradiente dinâmico no fundo
+    function applyGradient() {
+      const gradient = ctx.createLinearGradient(0, 0, 0, ctx.canvas.height);
+      gradient.addColorStop(0, "rgba(0, 255, 213, 0.3)");
+      gradient.addColorStop(1, "rgba(0, 255, 213, 0.0)");
+      chart.data.datasets[0].backgroundColor = gradient;
+      chart.update();
+    }
+    applyGradient();
+
+    // Botão download PNG
+    document.getElementById("downloadPNG").addEventListener("click", () => {
+      const link = document.createElement("a");
+      link.href = chart.toBase64Image("image/png", 1);
+      link.download = "grafico-preco-2025.png";
+      link.click();
+    });
+
+    // Botão download CSV
+    document.getElementById("downloadCSV").addEventListener("click", () => {
+      let csv = "Mês,Preço (USD)\n";
+      labels.forEach((m, i) => {
+        csv += `${m},${dataMensal[i] ?? ""}\n`;
+      });
+      const blob = new Blob([csv], {type: "text/csv"});
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.href = url;
+      link.download = "grafico-preco-2025.csv";
+      link.click();
     });
   </script>
 </body>
