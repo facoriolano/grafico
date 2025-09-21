@@ -1,67 +1,97 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Gráfico Lightweight Charts</title>
   <style>
-    body {
+    html, body {
       margin: 0;
-      background-color: #0f0f1a; /* fundo escuro */
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+      height: 100%;
+      background: #0f111a;
+      font-family: 'Segoe UI', sans-serif;
     }
     #chart {
-      width: 90%;
-      height: 80%;
+      width: 100%;
+      height: 100%;
     }
   </style>
   <!-- Biblioteca Lightweight Charts -->
-  <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/lightweight-charts@5.0.8/dist/lightweight-charts.standalone.production.js"></script>
 </head>
 <body>
   <div id="chart"></div>
   <script>
-    // Criar gráfico
-    const chart = LightweightCharts.createChart(document.getElementById('chart'), {
-      layout: {
-        background: { type: 'solid', color: '#0f0f1a' },
-        textColor: '#ffffff',
-      },
-      grid: {
-        vertLines: { color: '#1c1c2e' },
-        horzLines: { color: '#1c1c2e' },
-      },
-      width: document.getElementById('chart').clientWidth,
-      height: document.getElementById('chart').clientHeight,
-    });
+    document.addEventListener('DOMContentLoaded', () => {
+      const container = document.getElementById('chart');
+      const chart = LightweightCharts.createChart(container, {
+        width: container.clientWidth,
+        height: container.clientHeight,
+        layout: {
+          background: { color: '#0f111a' },
+          textColor: '#d1d4dc',
+        },
+        grid: {
+          vertLines: { color: 'rgba(255,255,255,0.05)' },
+          horzLines: { color: 'rgba(255,255,255,0.05)' },
+        },
+        crosshair: {
+          mode: LightweightCharts.CrosshairMode.Normal,
+        },
+        rightPriceScale: {
+          borderColor: 'rgba(255,255,255,0.2)',
+        },
+        timeScale: {
+          borderColor: 'rgba(255,255,255,0.2)',
+          timeVisible: true,
+        },
+      });
 
-    // Série de velas
-    const candleSeries = chart.addCandlestickSeries({
-      upColor: '#26a69a',
-      downColor: '#ef5350',
-      borderUpColor: '#26a69a',
-      borderDownColor: '#ef5350',
-      wickUpColor: '#26a69a',
-      wickDownColor: '#ef5350',
-    });
+      // Série de velas
+      const candleSeries = chart.addCandlestickSeries({
+        upColor: '#26a69a',
+        downColor: '#ef5350',
+        borderUpColor: '#26a69a',
+        borderDownColor: '#ef5350',
+        wickUpColor: '#26a69a',
+        wickDownColor: '#ef5350',
+      });
 
-    // Dados de exemplo
-    candleSeries.setData([
-      { time: '2025-09-01', open: 100, high: 120, low: 90, close: 110 },
-      { time: '2025-09-02', open: 110, high: 130, low: 100, close: 125 },
-      { time: '2025-09-03', open: 125, high: 140, low: 115, close: 118 },
-      { time: '2025-09-04', open: 118, high: 128, low: 110, close: 112 },
-      { time: '2025-09-05', open: 112, high: 122, low: 108, close: 120 },
-    ]);
+      // Dados de exemplo
+      const candleData = [
+        { time: '2025-09-01', open: 100, high: 120, low: 90, close: 110 },
+        { time: '2025-09-02', open: 110, high: 130, low: 100, close: 125 },
+        { time: '2025-09-03', open: 125, high: 140, low: 115, close: 118 },
+        { time: '2025-09-04', open: 118, high: 128, low: 110, close: 112 },
+        { time: '2025-09-05', open: 112, high: 122, low: 108, close: 120 },
+        { time: '2025-09-06', open: 120, high: 125, low: 110, close: 115 },
+        { time: '2025-09-07', open: 115, high: 130, low: 105, close: 128 },
+      ];
+      candleSeries.setData(candleData);
 
-    // Tornar responsivo
-    window.addEventListener('resize', () => {
-      chart.applyOptions({
-        width: document.getElementById('chart').clientWidth,
-        height: document.getElementById('chart').clientHeight,
+      // Média móvel simples (SMA)
+      const smaSeries = chart.addLineSeries({
+        color: '#ff9800',
+        lineWidth: 2,
+      });
+
+      function calculateSMA(data, period = 3) {
+        const sma = [];
+        for (let i = period - 1; i < data.length; i++) {
+          let sum = 0;
+          for (let j = 0; j < period; j++) sum += data[i - j].close;
+          sma.push({ time: data[i].time, value: sum / period });
+        }
+        return sma;
+      }
+      smaSeries.setData(calculateSMA(candleData, 3));
+
+      // Responsivo
+      window.addEventListener('resize', () => {
+        chart.applyOptions({
+          width: container.clientWidth,
+          height: container.clientHeight,
+        });
       });
     });
   </script>
