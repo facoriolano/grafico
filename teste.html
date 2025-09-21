@@ -1,91 +1,100 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Gráfico TradingView Style</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Teste LightweightCharts - diagnóstico</title>
   <style>
-    body {
-      margin: 0;
-      background: #0f111a; /* fundo escuro */
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-    }
-    #chart {
-      width: 95%;
-      height: 95%;
-    }
+    html,body { height:100%; margin:0; background:#0f111a; color:#ddd; font-family: Inter, sans-serif; }
+    .wrap { max-width:1200px; margin:20px auto; padding:12px; }
+    #chart { width:100%; height:520px; border-radius:8px; box-shadow: 0 6px 24px rgba(0,0,0,0.6); }
+    .info { margin-top:12px; font-size:13px; color:#bfc6d6; }
+    code { background:rgba(255,255,255,0.03); padding:2px 6px; border-radius:4px; }
   </style>
-  <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
+
+  <!-- CDN estático e versionado (jsDelivr) -->
+  <script src="https://cdn.jsdelivr.net/npm/lightweight-charts@5.0.8/dist/lightweight-charts.standalone.production.js"></script>
 </head>
 <body>
-  <div id="chart"></div>
+  <div class="wrap">
+    <h3>Teste Lightweight Charts (dark)</h3>
+    <div id="chart"></div>
+    <div class="info">
+      Abra DevTools → Console. <br>
+      Se aparecer algum erro cole aqui. Ex.: <code>LightweightCharts is not defined</code> ou <code>Cannot read properties of null</code>.
+    </div>
+  </div>
+
   <script>
-    const chart = LightweightCharts.createChart(document.getElementById('chart'), {
-      layout: {
-        background: { color: '#0f111a' },
-        textColor: '#d1d4dc', // texto claro
-      },
-      grid: {
-        vertLines: { color: 'rgba(255,255,255,0.05)' },
-        horzLines: { color: 'rgba(255,255,255,0.05)' },
-      },
-      crosshair: {
-        mode: LightweightCharts.CrosshairMode.Normal,
-      },
-      timeScale: {
-        borderColor: 'rgba(255,255,255,0.2)',
-        timeVisible: true,
-      },
-      rightPriceScale: {
-        borderColor: 'rgba(255,255,255,0.2)',
-      }
-    });
-
-    // Série de velas estilo TradingView
-    const candleSeries = chart.addCandlestickSeries({
-      upColor: '#26a69a',
-      downColor: '#ef5350',
-      borderUpColor: '#26a69a',
-      borderDownColor: '#ef5350',
-      wickUpColor: '#26a69a',
-      wickDownColor: '#ef5350',
-    });
-
-    // Dados de exemplo
-    const candleData = [
-      { time: '2025-09-01', open: 100, high: 105, low: 98, close: 103 },
-      { time: '2025-09-02', open: 103, high: 108, low: 102, close: 106 },
-      { time: '2025-09-03', open: 106, high: 109, low: 104, close: 105 },
-      { time: '2025-09-04', open: 105, high: 107, low: 101, close: 102 },
-      { time: '2025-09-05', open: 102, high: 104, low: 100, close: 101 },
-      { time: '2025-09-06', open: 101, high: 103, low: 97, close: 98 },
-      { time: '2025-09-07', open: 98, high: 102, low: 95, close: 100 },
-      { time: '2025-09-08', open: 100, high: 106, low: 99, close: 104 },
-    ];
-    candleSeries.setData(candleData);
-
-    // Média móvel em laranja
-    const smaSeries = chart.addLineSeries({
-      color: '#ff9800',
-      lineWidth: 2,
-    });
-
-    function calculateSMA(data, period = 3) {
-      let sma = [];
-      for (let i = period - 1; i < data.length; i++) {
-        let sum = 0;
-        for (let j = 0; j < period; j++) {
-          sum += data[i - j].close;
-        }
-        sma.push({ time: data[i].time, value: sum / period });
-      }
-      return sma;
+    // DEBUG rápido para ver se a lib carregou
+    console.log('window.LightweightCharts =>', window.LightweightCharts);
+    if (!window.LightweightCharts) {
+      console.error('LightweightCharts NÃO carregou. Verifique Network tab e o CDN (tente abrir o .js direto).');
     }
 
-    smaSeries.setData(calculateSMA(candleData, 3));
+    // garante que o DOM esteja pronto
+    document.addEventListener('DOMContentLoaded', () => {
+      const container = document.getElementById('chart');
+      if (!container) {
+        console.error('Elemento #chart não existe. Verifique o id do container no HTML.');
+        return;
+      }
+
+      // cria o chart (opções dark estilo TradingView)
+      const chart = window.LightweightCharts.createChart(container, {
+        width: container.clientWidth,
+        height: container.clientHeight,
+        layout: {
+          background: { color: '#0f111a' },
+          textColor: '#d1d4dc',
+        },
+        grid: {
+          vertLines: { color: 'rgba(255,255,255,0.03)' },
+          horzLines: { color: 'rgba(255,255,255,0.03)' },
+        },
+        rightPriceScale: { borderColor: 'rgba(255,255,255,0.08)' },
+        timeScale: { borderColor: 'rgba(255,255,255,0.08)', timeVisible: true },
+      });
+
+      // série candlestick
+      const candleSeries = chart.addCandlestickSeries({
+        upColor: '#26a69a',
+        downColor: '#ef5350',
+        borderUpColor: '#26a69a',
+        borderDownColor: '#ef5350',
+        wickUpColor: '#26a69a',
+        wickDownColor: '#ef5350',
+      });
+
+      const data = [
+        { time: '2025-09-01', open: 100, high: 105, low: 98, close: 103 },
+        { time: '2025-09-02', open: 103, high: 108, low: 102, close: 106 },
+        { time: '2025-09-03', open: 106, high: 109, low: 104, close: 105 },
+        { time: '2025-09-04', open: 105, high: 107, low: 101, close: 102 },
+        { time: '2025-09-05', open: 102, high: 104, low: 100, close: 101 },
+        { time: '2025-09-06', open: 101, high: 103, low: 97, close: 98 },
+        { time: '2025-09-07', open: 98, high: 102, low: 95, close: 100 },
+        { time: '2025-09-08', open: 100, high: 106, low: 99, close: 104 },
+      ];
+      candleSeries.setData(data);
+
+      // linha SMA simples
+      const sma = chart.addLineSeries({ color: '#ff9800', lineWidth: 2 });
+      function calcSMA(d, period = 3) {
+        const out = [];
+        for (let i = period - 1; i < d.length; i++) {
+          let s = 0;
+          for (let j = 0; j < period; j++) s += d[i - j].close;
+          out.push({ time: d[i].time, value: s / period });
+        }
+        return out;
+      }
+      sma.setData(calcSMA(data, 3));
+
+      // Pró-segurança: força um resize (resolver casos em que container muda)
+      setTimeout(() => window.dispatchEvent(new Event('resize')), 250);
+      console.log('Chart criado com sucesso.');
+    });
   </script>
 </body>
 </html>
