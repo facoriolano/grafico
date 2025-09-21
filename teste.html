@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gráfico com Lightweight Charts</title>
+  <style>
+    body {
+      margin: 0;
+      background: #1e1e1e;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+    }
+    #chart {
+      width: 90%;
+      height: 90%;
+    }
+  </style>
+  <!-- CDN oficial -->
+  <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
+</head>
+<body>
+  <div id="chart"></div>
+  <script>
+    // Cria o gráfico
+    const chart = LightweightCharts.createChart(document.getElementById('chart'), {
+      layout: {
+        background: { color: '#1e1e1e' },
+        textColor: '#DDD',
+      },
+      grid: {
+        vertLines: { color: '#444' },
+        horzLines: { color: '#444' },
+      },
+      timeScale: {
+        timeVisible: true,
+        secondsVisible: false,
+      }
+    });
+
+    // Série de velas (candlestick)
+    const candleSeries = chart.addCandlestickSeries({
+      upColor: '#26a69a',
+      downColor: '#ef5350',
+      borderVisible: false,
+      wickUpColor: '#26a69a',
+      wickDownColor: '#ef5350',
+    });
+
+    // Dados fictícios de exemplo
+    const candleData = [
+      { time: '2025-09-01', open: 100, high: 105, low: 98, close: 103 },
+      { time: '2025-09-02', open: 103, high: 108, low: 102, close: 106 },
+      { time: '2025-09-03', open: 106, high: 109, low: 104, close: 105 },
+      { time: '2025-09-04', open: 105, high: 107, low: 101, close: 102 },
+      { time: '2025-09-05', open: 102, high: 104, low: 100, close: 101 },
+      { time: '2025-09-06', open: 101, high: 103, low: 97, close: 98 },
+      { time: '2025-09-07', open: 98, high: 102, low: 95, close: 100 },
+      { time: '2025-09-08', open: 100, high: 106, low: 99, close: 104 },
+    ];
+    candleSeries.setData(candleData);
+
+    // Série de linha (média móvel)
+    const smaSeries = chart.addLineSeries({
+      color: '#ff9800',
+      lineWidth: 2,
+    });
+
+    // Calcula SMA simples de 3 períodos
+    function calculateSMA(data, period = 3) {
+      let sma = [];
+      for (let i = period - 1; i < data.length; i++) {
+        let sum = 0;
+        for (let j = 0; j < period; j++) {
+          sum += data[i - j].close;
+        }
+        sma.push({ time: data[i].time, value: sum / period });
+      }
+      return sma;
+    }
+
+    smaSeries.setData(calculateSMA(candleData, 3));
+  </script>
+</body>
+</html>
