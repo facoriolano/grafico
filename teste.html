@@ -2,48 +2,68 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1.0" />
-  <title>Gráfico Teste</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Gráfico Lightweight Charts</title>
   <style>
-    html, body {
+    body {
       margin: 0;
-      height: 100%;
-      background: #131722;
+      background-color: #0f0f1a; /* fundo escuro */
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
     }
     #chart {
-      width: 100%;
-      height: 100%;
+      width: 90%;
+      height: 80%;
     }
   </style>
-  <!-- CDN estável jsDelivr -->
-  <script src="https://cdn.jsdelivr.net/npm/lightweight-charts@5.0.8/dist/lightweight-charts.standalone.production.js"></script>
+  <!-- Biblioteca Lightweight Charts -->
+  <script src="https://unpkg.com/lightweight-charts/dist/lightweight-charts.standalone.production.js"></script>
 </head>
 <body>
   <div id="chart"></div>
   <script>
+    // Criar gráfico
     const chart = LightweightCharts.createChart(document.getElementById('chart'), {
       layout: {
-        background: { color: '#131722' },
-        textColor: '#d1d4dc',
+        background: { type: 'solid', color: '#0f0f1a' },
+        textColor: '#ffffff',
       },
       grid: {
-        vertLines: { color: 'rgba(255,255,255,0.05)' },
-        horzLines: { color: 'rgba(255,255,255,0.05)' },
+        vertLines: { color: '#1c1c2e' },
+        horzLines: { color: '#1c1c2e' },
       },
-      timeScale: { timeVisible: true }
+      width: document.getElementById('chart').clientWidth,
+      height: document.getElementById('chart').clientHeight,
     });
 
-    const series = chart.addCandlestickSeries();
-    series.setData([
-      { time: '2025-09-01', open: 100, high: 105, low: 98, close: 103 },
-      { time: '2025-09-02', open: 103, high: 108, low: 102, close: 106 },
-      { time: '2025-09-03', open: 106, high: 109, low: 104, close: 105 },
-      { time: '2025-09-04', open: 105, high: 107, low: 101, close: 102 },
-      { time: '2025-09-05', open: 102, high: 104, low: 100, close: 101 },
-      { time: '2025-09-06', open: 101, high: 103, low: 97, close: 98 },
-      { time: '2025-09-07', open: 98, high: 102, low: 95, close: 100 },
-      { time: '2025-09-08', open: 100, high: 106, low: 99, close: 104 },
+    // Série de velas
+    const candleSeries = chart.addCandlestickSeries({
+      upColor: '#26a69a',
+      downColor: '#ef5350',
+      borderUpColor: '#26a69a',
+      borderDownColor: '#ef5350',
+      wickUpColor: '#26a69a',
+      wickDownColor: '#ef5350',
+    });
+
+    // Dados de exemplo
+    candleSeries.setData([
+      { time: '2025-09-01', open: 100, high: 120, low: 90, close: 110 },
+      { time: '2025-09-02', open: 110, high: 130, low: 100, close: 125 },
+      { time: '2025-09-03', open: 125, high: 140, low: 115, close: 118 },
+      { time: '2025-09-04', open: 118, high: 128, low: 110, close: 112 },
+      { time: '2025-09-05', open: 112, high: 122, low: 108, close: 120 },
     ]);
+
+    // Tornar responsivo
+    window.addEventListener('resize', () => {
+      chart.applyOptions({
+        width: document.getElementById('chart').clientWidth,
+        height: document.getElementById('chart').clientHeight,
+      });
+    });
   </script>
 </body>
 </html>
